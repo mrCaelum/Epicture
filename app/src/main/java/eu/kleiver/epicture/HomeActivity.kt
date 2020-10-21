@@ -16,6 +16,15 @@ import android.view.Menu
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val uploadFragment = UploadFragment()
+        val favouritesFragment = FavouritesFragment()
+        val settingsFragment = SettingsFragment()
+        val profileFragment = ProfileFragment()
+        val searchFragment = SearchFragment()
+
+        makeCurrentFragment(profileFragment)
+
         setContentView(R.layout.activity_home)
         findViewById<TextView>(R.id.text_username).text = "Welcome back, " + ImgurAPI.data["account_username"] + " !"
         ImgurAPI.getUserImages(0)
@@ -28,14 +37,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        val uploadFragment = UploadFragment()
-        val favouritesFragment = FavouritesFragment()
-        val settingsFragment = SettingsFragment()
-        val profileFragment = ProfileFragment()
-        val searchFragment = SearchFragment()
-
-        makeCurrentFragment(profileFragment)
-
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.ic_upload -> makeCurrentFragment(uploadFragment)
@@ -46,16 +47,14 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-    }
+        bottom_navigation.setSelectedItemId(R.id.ic_profile);
 
+    }
+    
     private fun makeCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fl_wrapper, fragment)
             commit()
         }
-
 }
