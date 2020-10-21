@@ -18,15 +18,6 @@ class HomeActivity : AppCompatActivity() {
 
         makeCurrentFragment(profileFragment)
 
-        setContentView(R.layout.activity_home)
-        val uploadFragment = UploadFragment()
-        val favouritesFragment = FavouritesFragment()
-        val settingsFragment = SettingsFragment()
-        val profileFragment = ProfileFragment()
-        val searchFragment = SearchFragment()
-
-        makeCurrentFragment(profileFragment)
-
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.ic_upload -> makeCurrentFragment(uploadFragment)
