@@ -59,7 +59,7 @@ object ImgurAPI {
         })
     }
 
-    fun getUserImages(page: Int = 0): Boolean
+    fun getUserImages(page: Int = 0, resolve: () -> Unit, reject: () -> Unit)
     {
         val url = HttpUrl.Builder()
             .scheme("https")
@@ -74,9 +74,8 @@ object ImgurAPI {
         req?.let {
             asyncRequest(it)
             if (this.receivedData?.getBoolean("success") == true)
-                return true
+                return resolve()
         }
-        this.receivedData = null
-        return false
+        return reject()
     }
 }
