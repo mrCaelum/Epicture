@@ -35,8 +35,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun refreshImages() {
-        ImgurAPI.getUserImages(0, {
-            val jsonData: JSONArray = ImgurAPI.receivedData?.getJSONArray("data") ?: return@getUserImages
+        ImgurAPI.getUserImages(0, { receivedData ->
+            val jsonData: JSONArray = receivedData.getJSONArray("data") ?: return@getUserImages
             images.clear()
             for (i in 0 until jsonData.length()) {
                 val jsonImage: JSONObject = jsonData.getJSONObject(i)

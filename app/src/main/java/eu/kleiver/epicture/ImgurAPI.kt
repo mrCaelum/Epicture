@@ -15,7 +15,6 @@ object ImgurAPI {
     private const val apiVersion: String = "3"
     private val httpClient: OkHttpClient = OkHttpClient.Builder().build()
     var data: HashMap<String, String> = HashMap()
-    var receivedData: JSONObject? = null
 
     /*
      * Ask Imgur credentials by calling the web browser
@@ -46,20 +45,29 @@ object ImgurAPI {
             .build()
     }
 
-    private fun asyncRequest(req: Request)
+    private fun asyncRequest(req: Request, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         httpClient.newCall(req).enqueue(object: Callback {
             override fun onResponse(call: Call, response: Response) {
-                ImgurAPI.receivedData = JSONObject(response.body!!.string())
+                return try {
+                    val res = JSONObject(response.body!!.string())
+                    if (res.getBoolean("success")) {
+                        resolve(res)
+                    } else {
+                        reject(Exception())
+                    }
+                } catch (e: Exception) {
+                    reject(e)
+                }
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                ImgurAPI.receivedData = null
+                return reject(e)
             }
         })
     }
 
-    fun getUserImages(page: Int = 0, resolve: () -> Unit, reject: () -> Unit)
+    fun getUserImages(page: Int = 0, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
             .scheme("https")
@@ -72,10 +80,8 @@ object ImgurAPI {
             .build()
         val req: Request? = buildGetRequest(url)
         req?.let {
-            asyncRequest(it)
-            if (this.receivedData?.getBoolean("success") == true)
-                return resolve()
+            return asyncRequest(it, resolve, reject)
         }
-        return reject()
+        return reject(Exception())
     }
 }
