@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:elevation="4dp"
     >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/username_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/avatar_card"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="12dp"
+            android:text=""/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/avatar_card"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:cardCornerRadius="250dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp">
+
+                <ImageView
+                    android:id="@+id/avatar_container"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
 </androidx.appcompat.widget.Toolbar>
