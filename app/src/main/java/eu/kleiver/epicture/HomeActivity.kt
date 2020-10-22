@@ -2,14 +2,25 @@ package eu.kleiver.epicture
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import eu.kleiver.epicture.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
+    private lateinit var usernameContainer: TextView
+    private lateinit var avatarContainer: ImageView
+    private val avatarModel: AvatarViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        usernameContainer = findViewById(R.id.username_container)
+        avatarContainer = findViewById(R.id.avatar_container)
 
         val uploadFragment = UploadFragment()
         val favouritesFragment = FavouritesFragment()
@@ -30,6 +41,12 @@ class HomeActivity : AppCompatActivity() {
             true
         }
         bottom_navigation.selectedItemId = R.id.ic_profile
+        usernameContainer.text = ImgurAPI.data["account_username"]
+        avatarModel.url.observe(this, Observer<String> { newAvatar ->
+            if (newAvatar != null)
+                Glide.with(this).load(newAvatar).into(avatarContainer)
+        })
+        avatarModel.loadAvatar()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =

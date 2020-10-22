@@ -67,6 +67,23 @@ object ImgurAPI {
         })
     }
 
+    fun getUserAvatar(resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("account")
+            .addPathSegment(data["account_username"]!!)
+            .addPathSegment("avatar")
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
+
     fun getUserImages(page: Int = 0, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
