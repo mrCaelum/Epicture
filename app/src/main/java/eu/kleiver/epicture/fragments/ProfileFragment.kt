@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import eu.kleiver.epicture.Image
 import eu.kleiver.epicture.ImgurAPI
 import eu.kleiver.epicture.MainAdapter
@@ -18,6 +19,7 @@ import org.json.JSONObject
 class ProfileFragment : Fragment() {
     private lateinit var fragView: View
     private lateinit var recyclerView: RecyclerView
+    private lateinit var refreshItem: SwipeRefreshLayout
     private var images: ArrayList<Image> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +30,13 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragView = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerView = fragView.findViewById(R.id.imagesRecyclerView)
+        refreshItem = fragView.findViewById(R.id.imagesRefreshItem)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(fragView.context)
         recyclerView.adapter = MainAdapter(images)
+        refreshItem.setOnRefreshListener {
+            refreshImages()
+        }
         return fragView
     }
 
@@ -52,6 +58,7 @@ class ProfileFragment : Fragment() {
                     link = jsonImage.getString("link")
                 ))
             }
+            refreshItem.isRefreshing = false
         }, {})
     }
 }

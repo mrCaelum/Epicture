@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.frame_imageview.view.*
 
-class MainAdapter(private val dataset: ArrayList<Image>) :
-    RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(private val dataset: ArrayList<Image>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 

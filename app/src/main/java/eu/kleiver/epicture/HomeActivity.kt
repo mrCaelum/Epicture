@@ -23,7 +23,7 @@ class HomeActivity : AppCompatActivity() {
         avatarContainer = findViewById(R.id.avatar_container)
 
         val uploadFragment = UploadFragment()
-        val favouritesFragment = FavouritesFragment()
+        val favoritesFragment = FavoritesFragment()
         val settingsFragment = SettingsFragment()
         val profileFragment = ProfileFragment()
         val searchFragment = SearchFragment()
@@ -33,7 +33,7 @@ class HomeActivity : AppCompatActivity() {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.ic_upload -> makeCurrentFragment(uploadFragment)
-                R.id.ic_favorite -> makeCurrentFragment(favouritesFragment)
+                R.id.ic_favorite -> makeCurrentFragment(favoritesFragment)
                 R.id.ic_profile -> makeCurrentFragment(profileFragment)
                 R.id.ic_search -> makeCurrentFragment(searchFragment)
                 R.id.ic_settings -> makeCurrentFragment(settingsFragment)
