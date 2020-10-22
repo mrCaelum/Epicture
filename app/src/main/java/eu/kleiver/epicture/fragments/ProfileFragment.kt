@@ -21,19 +21,26 @@ class ProfileFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var refreshItem: SwipeRefreshLayout
     private var images: ArrayList<Image> = ArrayList()
+    lateinit var adapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         refreshImages()
     }
 
+    private fun initRecyclerView() {
+        adapter = MainAdapter(images)
+        adapter.notifyDataSetChanged()
+        recyclerView.adapter = adapter
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(fragView.context)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragView = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerView = fragView.findViewById(R.id.imagesRecyclerView)
         refreshItem = fragView.findViewById(R.id.imagesRefreshItem)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(fragView.context)
-        recyclerView.adapter = MainAdapter(images)
+        initRecyclerView()
         refreshItem.setOnRefreshListener {
             refreshImages()
         }
