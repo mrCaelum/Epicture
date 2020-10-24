@@ -18,7 +18,11 @@ class MainAdapter(private val dataset: ArrayList<Image>) : RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(holder.view).load(dataset[position].link).into(holder.view.imageView)
+        if (dataset[position].is_album) {
+            Glide.with(holder.view).load(dataset[position].images?.get(0)?.link).into(holder.view.imageView)
+        } else {
+            Glide.with(holder.view).load(dataset[position].link).into(holder.view.imageView)
+        }
     }
 
     override fun getItemCount() = dataset.size

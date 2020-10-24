@@ -56,13 +56,9 @@ class ProfileFragment : Fragment() {
                 images.add(Image(
                     id = jsonImage.getString("id"),
                     title = jsonImage.getString("title"),
-                    description = jsonImage.getString("description"),
-                    animated = jsonImage.getString("animated").toBoolean(),
-                    width = jsonImage.getString("width").toInt(),
-                    height = jsonImage.getString("height").toInt(),
-                    size = jsonImage.getString("size").toInt(),
-                    favorite = jsonImage.getString("favorite").toBoolean(),
-                    link = jsonImage.getString("link")
+                    link = jsonImage.getString("link"),
+                    is_album = false,
+                    images = null
                 ))
             }
             refreshItem.isRefreshing = false

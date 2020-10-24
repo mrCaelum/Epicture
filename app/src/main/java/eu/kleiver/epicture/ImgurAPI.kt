@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
 import org.json.JSONObject
 import okhttp3.*
+import org.json.JSONArray
 import java.io.IOException
 
 object ImgurAPI {
@@ -16,10 +17,6 @@ object ImgurAPI {
     private val httpClient: OkHttpClient = OkHttpClient.Builder().build()
     var data: HashMap<String, String> = HashMap()
 
-    /*
-     * Ask Imgur credentials by calling the web browser
-     * @param baseContext: Login intent base context
-     */
     fun askCredentials(baseContext: Context)
     {
         startActivity(baseContext, Intent(Intent.ACTION_VIEW, Uri.parse("https://api.imgur.com/oauth2/authorize?response_type=token&client_id=" + this.clientId)), null)
@@ -32,6 +29,25 @@ object ImgurAPI {
             val pair = value.split("=")
             this.data[pair[0]] = pair[1]
         }
+    }
+
+    fun jsonToImageList(jsonArray: JSONArray): ArrayList<Image>
+    {
+        var imageList: ArrayList<Image> = ArrayList()
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject: JSONObject = jsonArray.getJSONObject(i)
+            var newImage = Image(
+                id = jsonObject.getString("id"),
+                title = jsonObject.getString("title"),
+                is_album = jsonObject.getString("is_album").toBoolean(),
+                link = jsonObject.getString("link"),
+                images = null
+            )
+            if (newImage.is_album) {
+                newImage.images = jsonToImageList(jsonObject.getJSONArray("images"))
+            }
+        }
+        return imageList
     }
 
     private fun buildGetRequest(url: HttpUrl): Request?
@@ -94,6 +110,23 @@ object ImgurAPI {
             .addPathSegment(data["account_username"]!!)
             .addPathSegment("images")
             .addPathSegment(page.toString())
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
+
+    fun searchImages(value: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("gallery")
+            .addPathSegment("search")
+            .addEncodedQueryParameter("q", value)
             .build()
         val req: Request? = buildGetRequest(url)
         req?.let {
