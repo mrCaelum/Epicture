@@ -21,18 +21,13 @@ class ProfileFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var refreshItem: SwipeRefreshLayout
     private var images: ArrayList<Image> = ArrayList()
-    lateinit var adapter: MainAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        refreshImages()
-    }
+    private lateinit var adapter: MainAdapter
 
     private fun initRecyclerView() {
         adapter = MainAdapter(images)
         adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
         recyclerView.layoutManager = LinearLayoutManager(fragView.context)
     }
 
@@ -44,6 +39,7 @@ class ProfileFragment : Fragment() {
         refreshItem.setOnRefreshListener {
             refreshImages()
         }
+        refreshImages()
         return fragView
     }
 

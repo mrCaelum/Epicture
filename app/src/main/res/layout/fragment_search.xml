@@ -6,28 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SearchFragment">
 
-    <SearchView
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:outlineAmbientShadowColor="#FFF"
-        android:elevation="1dp"
-        android:background="#333"/>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/imagesRefreshItem"
+        android:id="@+id/searchRefreshItem"
         android:layout_width="wrap_content"
         android:layout_height="0px"
         android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/imagesRecyclerView"
+            android:id="@+id/searchRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ImageButton
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_search_24"
+        app:layout_constraintBottom_toTopOf="@+id/searchRefreshItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/search_bar"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toStartOf="@+id/search_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
