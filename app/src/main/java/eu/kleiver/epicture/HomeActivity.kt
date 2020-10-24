@@ -1,15 +1,19 @@
 package eu.kleiver.epicture
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import eu.kleiver.epicture.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
+
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var usernameContainer: TextView
@@ -47,6 +51,13 @@ class HomeActivity : AppCompatActivity() {
                 Glide.with(this).load(newAvatar).into(avatarContainer)
         })
         avatarModel.loadAvatar()
+
+        val avatar_container = findViewById<ImageView>(R.id.avatar_container)
+        avatar_container.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            Toast.makeText(this, "Welcome to your profile settings !", Toast.LENGTH_SHORT).show()
+
+        }
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =
