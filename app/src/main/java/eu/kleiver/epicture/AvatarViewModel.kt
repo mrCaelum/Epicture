@@ -16,3 +16,17 @@ class AvatarViewModel : ViewModel() {
         })
     }
 }
+
+class BioViewModel : ViewModel() {
+    val url: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    fun loadBio() {
+        ImgurAPI.getUserBio({ receivedData ->
+            url.postValue(receivedData.getJSONObject("data").getString("bio"))
+        }, {
+            url.postValue(null)
+        })
+    }
+}

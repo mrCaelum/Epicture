@@ -134,4 +134,21 @@ object ImgurAPI {
         }
         return reject(Exception())
     }
+
+    fun getUserBio(resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("account")
+            .addPathSegment(data["account_username"]!!)
+            .addPathSegment("bio")
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
 }
