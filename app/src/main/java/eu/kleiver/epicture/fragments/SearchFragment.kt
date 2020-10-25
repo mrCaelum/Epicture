@@ -29,7 +29,6 @@ class SearchFragment : Fragment() {
 
     private fun initRecyclerView() {
         adapter = MainAdapter(images)
-        adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(false)
         recyclerView.layoutManager = LinearLayoutManager(fragView.context)
@@ -52,39 +51,19 @@ class SearchFragment : Fragment() {
         return fragView
     }
 
+    override fun onResume() {
+        super.onResume()
+        recyclerView.scrollToPosition(0)
+    }
+
     private fun refreshImages() {
         if (requesting)
             return
         requesting = true
+        refreshItem.isRefreshing = true
         ImgurAPI.searchImages(searchBar.text.toString(), { receivedData ->
-            val jsonArray: JSONArray = receivedData.getJSONArray("data") ?: return@searchImages
             images.clear()
-            for (i in 0 until jsonArray.length()) {
-                val jsonObject: JSONObject = jsonArray.getJSONObject(i)
-                val newImage = Image(
-                    id = jsonObject.getString("id"),
-                    title = jsonObject.getString("title"),
-                    link = jsonObject.getString("link"),
-                    is_album = jsonObject.getBoolean("is_album"),
-                    images = null
-                )
-                if (newImage.is_album) {
-                    val jsonSubArray: JSONArray = jsonObject.getJSONArray("images") ?: return@searchImages
-                    newImage.images = ArrayList()
-                    for (j in 0 until jsonSubArray.length()) {
-                        val jsonSubObject: JSONObject = jsonSubArray.getJSONObject(j)
-                        val newSubImage = Image(
-                            id = jsonSubObject.getString("id"),
-                            title = jsonSubObject.getString("title"),
-                            link = jsonSubObject.getString("link"),
-                            is_album = false,
-                            images = null
-                        )
-                        newImage.images?.add(newSubImage) ?: continue
-                    }
-                }
-                images.add(newImage)
-            }
+            images.addAll(ImgurAPI.jsonToImageList(receivedData.getJSONArray("data")))
             refreshItem.isRefreshing = false
             requesting = false
         }, {

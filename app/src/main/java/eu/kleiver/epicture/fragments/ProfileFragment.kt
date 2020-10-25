@@ -26,7 +26,6 @@ class ProfileFragment : Fragment() {
 
     private fun initRecyclerView() {
         adapter = MainAdapter(images)
-        adapter.notifyDataSetChanged()
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(false)
         recyclerView.layoutManager = LinearLayoutManager(fragView.context)
@@ -48,19 +47,10 @@ class ProfileFragment : Fragment() {
         if (requesting)
             return
         requesting = true
+        refreshItem.isRefreshing = true
         ImgurAPI.getUserImages(0, { receivedData ->
-            val jsonData: JSONArray = receivedData.getJSONArray("data") ?: return@getUserImages
             images.clear()
-            for (i in 0 until jsonData.length()) {
-                val jsonImage: JSONObject = jsonData.getJSONObject(i)
-                images.add(Image(
-                    id = jsonImage.getString("id"),
-                    title = jsonImage.getString("title"),
-                    link = jsonImage.getString("link"),
-                    is_album = false,
-                    images = null
-                ))
-            }
+            images.addAll(ImgurAPI.jsonToImageList(receivedData.getJSONArray("data")))
             refreshItem.isRefreshing = false
             requesting = false
         }, {

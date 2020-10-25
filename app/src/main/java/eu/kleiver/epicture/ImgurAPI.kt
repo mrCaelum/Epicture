@@ -33,19 +33,32 @@ object ImgurAPI {
 
     fun jsonToImageList(jsonArray: JSONArray): ArrayList<Image>
     {
-        var imageList: ArrayList<Image> = ArrayList()
+        val imageList: ArrayList<Image> = ArrayList()
         for (i in 0 until jsonArray.length()) {
             val jsonObject: JSONObject = jsonArray.getJSONObject(i)
-            var newImage = Image(
-                id = jsonObject.getString("id"),
-                title = jsonObject.getString("title"),
-                is_album = jsonObject.getString("is_album").toBoolean(),
-                link = jsonObject.getString("link"),
-                images = null
-            )
-            if (newImage.is_album) {
-                newImage.images = jsonToImageList(jsonObject.getJSONArray("images"))
+            lateinit var newImage: Image
+            try {
+                newImage = Image(
+                    id = jsonObject.getString("id"),
+                    title = jsonObject.getString("title"),
+                    is_album = jsonObject.getBoolean("is_album"),
+                    link = "https://i.imgur.com/" + jsonObject.getString("cover") + "." + jsonObject.getString("type").toString().split('/')[1],
+                    images = null
+                )
+                println(newImage.link)
+                if (newImage.is_album) {
+                    newImage.images = jsonToImageList(jsonObject.getJSONArray("images"))
+                }
+            } catch (e: Exception) {
+                newImage = Image(
+                    id = jsonObject.getString("id"),
+                    title = jsonObject.getString("title"),
+                    is_album = false,
+                    link = jsonObject.getString("link"),
+                    images = null
+                )
             }
+            imageList.add(newImage)
         }
         return imageList
     }
@@ -83,6 +96,22 @@ object ImgurAPI {
         })
     }
 
+    fun getImage(id: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("image")
+            .addPathSegment(id)
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
+
     fun getUserAvatar(resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -109,6 +138,24 @@ object ImgurAPI {
             .addPathSegment("account")
             .addPathSegment(data["account_username"]!!)
             .addPathSegment("images")
+            .addPathSegment(page.toString())
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
+
+    fun getUserFavorites(page: Int = 0, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("account")
+            .addPathSegment(data["account_username"]!!)
+            .addPathSegment("favorites")
             .addPathSegment(page.toString())
             .build()
         val req: Request? = buildGetRequest(url)
