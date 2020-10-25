@@ -55,9 +55,8 @@ class FavoritesFragment : Fragment() {
         requesting = true
         refreshItem.isRefreshing = true
         ImgurAPI.getUserFavorites(0, { receivedData ->
-            println(receivedData)
             images.clear()
-            images.addAll(ImgurAPI.jsonToImageList(receivedData.getJSONArray("data")))
+            images.addAll(ImgurAPI.jsonToImageList(receivedData.getJSONArray("data"), useFastLink = true))
             refreshItem.isRefreshing = false
             requesting = false
         }, {

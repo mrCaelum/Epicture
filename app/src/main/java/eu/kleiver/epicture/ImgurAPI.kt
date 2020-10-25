@@ -31,32 +31,31 @@ object ImgurAPI {
         }
     }
 
-    fun jsonToImageList(jsonArray: JSONArray): ArrayList<Image>
+    private fun getJsonLink(jsonObject: JSONObject): String
+    {
+        return if (jsonObject.has("cover")) {
+            ("https://i.imgur.com/" + jsonObject.getString("cover") + "." + jsonObject.getString("type").toString().split('/')[1])
+        } else {
+            jsonObject.getString("link")
+        }
+    }
+
+    fun jsonToImageList(jsonArray: JSONArray, useFastLink: Boolean = false): ArrayList<Image>
     {
         val imageList: ArrayList<Image> = ArrayList()
         for (i in 0 until jsonArray.length()) {
             val jsonObject: JSONObject = jsonArray.getJSONObject(i)
-            lateinit var newImage: Image
-            try {
-                newImage = Image(
-                    id = jsonObject.getString("id"),
-                    title = jsonObject.getString("title"),
-                    is_album = jsonObject.getBoolean("is_album"),
-                    link = "https://i.imgur.com/" + jsonObject.getString("cover") + "." + jsonObject.getString("type").toString().split('/')[1],
-                    images = null
-                )
-                println(newImage.link)
-                if (newImage.is_album) {
-                    newImage.images = jsonToImageList(jsonObject.getJSONArray("images"))
-                }
-            } catch (e: Exception) {
-                newImage = Image(
-                    id = jsonObject.getString("id"),
-                    title = jsonObject.getString("title"),
-                    is_album = false,
-                    link = jsonObject.getString("link"),
-                    images = null
-                )
+            val newImage = Image(
+                id = jsonObject.getString("id"),
+                is_album = false,
+                link = if (useFastLink) { getJsonLink(jsonObject) } else { jsonObject.getString("link") },
+                images = null
+            )
+            if (jsonObject.has("is_album") && (!useFastLink || (useFastLink && !jsonObject.has("cover")))) {
+                newImage.is_album = jsonObject.getBoolean("is_album")
+            }
+            if (newImage.is_album) {
+                newImage.images = jsonToImageList(jsonObject.getJSONArray("images"))
             }
             imageList.add(newImage)
         }
