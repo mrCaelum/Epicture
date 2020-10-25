@@ -22,6 +22,7 @@ class ProfileFragment : Fragment() {
     private lateinit var refreshItem: SwipeRefreshLayout
     private var images: ArrayList<Image> = ArrayList()
     private lateinit var adapter: MainAdapter
+    private var requesting: Boolean = false
 
     private fun initRecyclerView() {
         adapter = MainAdapter(images)
@@ -44,6 +45,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun refreshImages() {
+        if (requesting)
+            return
+        requesting = true
         ImgurAPI.getUserImages(0, { receivedData ->
             val jsonData: JSONArray = receivedData.getJSONArray("data") ?: return@getUserImages
             images.clear()
@@ -58,6 +62,10 @@ class ProfileFragment : Fragment() {
                 ))
             }
             refreshItem.isRefreshing = false
-        }, {})
+            requesting = false
+        }, {
+            refreshItem.isRefreshing = false
+            requesting = false
+        })
     }
 }

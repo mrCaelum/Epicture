@@ -25,6 +25,7 @@ class SearchFragment : Fragment() {
     private lateinit var searchBtn: ImageButton
     private var images: ArrayList<Image> = ArrayList()
     private lateinit var adapter: MainAdapter
+    private var requesting: Boolean = false
 
     private fun initRecyclerView() {
         adapter = MainAdapter(images)
@@ -52,20 +53,43 @@ class SearchFragment : Fragment() {
     }
 
     private fun refreshImages() {
+        if (requesting)
+            return
+        requesting = true
         ImgurAPI.searchImages(searchBar.text.toString(), { receivedData ->
-            val jsonData: JSONArray = receivedData.getJSONArray("data") ?: return@searchImages
+            val jsonArray: JSONArray = receivedData.getJSONArray("data") ?: return@searchImages
             images.clear()
-            for (i in 0 until jsonData.length()) {
-                val jsonImage: JSONObject = jsonData.getJSONObject(i)
-                images.add(Image(
-                    id = jsonImage.getString("id"),
-                    title = jsonImage.getString("title"),
-                    link = jsonImage.getString("link"),
-                    is_album = false,
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject: JSONObject = jsonArray.getJSONObject(i)
+                val newImage = Image(
+                    id = jsonObject.getString("id"),
+                    title = jsonObject.getString("title"),
+                    link = jsonObject.getString("link"),
+                    is_album = jsonObject.getBoolean("is_album"),
                     images = null
-                ))
+                )
+                if (newImage.is_album) {
+                    val jsonSubArray: JSONArray = jsonObject.getJSONArray("images") ?: return@searchImages
+                    newImage.images = ArrayList()
+                    for (j in 0 until jsonSubArray.length()) {
+                        val jsonSubObject: JSONObject = jsonSubArray.getJSONObject(j)
+                        val newSubImage = Image(
+                            id = jsonSubObject.getString("id"),
+                            title = jsonSubObject.getString("title"),
+                            link = jsonSubObject.getString("link"),
+                            is_album = false,
+                            images = null
+                        )
+                        newImage.images?.add(newSubImage) ?: continue
+                    }
+                }
+                images.add(newImage)
             }
             refreshItem.isRefreshing = false
-        }, {})
+            requesting = false
+        }, {
+            refreshItem.isRefreshing = false
+            requesting = false
+        })
     }
 }
