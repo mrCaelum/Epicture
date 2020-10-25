@@ -14,6 +14,7 @@ import eu.kleiver.epicture.Image
 import eu.kleiver.epicture.ImgurAPI
 import eu.kleiver.epicture.MainAdapter
 import eu.kleiver.epicture.R
+import okhttp3.internal.notifyAll
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -42,11 +43,6 @@ class FavoritesFragment : Fragment() {
         }
         refreshImages()
         return fragView
-    }
-
-    override fun onResume() {
-        super.onResume()
-        recyclerView.scrollToPosition(0)
     }
 
     private fun refreshImages() {
