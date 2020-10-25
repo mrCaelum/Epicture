@@ -16,6 +16,9 @@ import eu.kleiver.epicture.R
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Fragment that implement a recycler view showing images of logged user.
+ */
 class ProfileFragment : Fragment() {
     private lateinit var fragView: View
     private lateinit var recyclerView: RecyclerView

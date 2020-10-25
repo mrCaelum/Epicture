@@ -10,6 +10,9 @@ import com.bumptech.glide.Glide
 import androidx.activity.viewModels
 import com.google.android.material.textfield.TextInputEditText
 
+/**
+ * The profile activity of the logged user.
+ */
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var usernameContainer: TextView
@@ -33,10 +36,9 @@ class ProfileActivity : AppCompatActivity() {
         })
         avatarModel.loadAvatar()
 
-        //bioModel.loadBio()
-        //bioModel.url.observe(this, Observer<String> { newBio ->
-
-            //     Glide.with(this).load(newBio).into(userBio)
-        //})
+//        bioModel.loadBio()
+//        bioModel.url.observe(this, Observer<String> { newBio ->
+//            userBio.text
+//        })
     }
 }

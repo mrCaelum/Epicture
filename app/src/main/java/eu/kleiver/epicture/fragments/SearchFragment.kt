@@ -17,6 +17,9 @@ import eu.kleiver.epicture.R
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Fragment that implement a recycler view showing images retrieved with a query.
+ */
 class SearchFragment : Fragment() {
     private lateinit var fragView: View
     private lateinit var recyclerView: RecyclerView

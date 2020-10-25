@@ -9,6 +9,9 @@ import okhttp3.*
 import org.json.JSONArray
 import java.io.IOException
 
+/**
+ * An object that implement the Imgur API
+ */
 object ImgurAPI {
     private const val clientId: String = "8a2609811db5811"
     private const val clientSecret: String = "1c7a3990d3bbcf7ecc00c1c5e7b9409e35a9b7a0"
@@ -17,11 +20,22 @@ object ImgurAPI {
     private val httpClient: OkHttpClient = OkHttpClient.Builder().build()
     var data: HashMap<String, String> = HashMap()
 
+    /**
+     * Call the Imgur login web intent
+     *
+     * @param baseContext The base context to call the intent
+     */
     fun askCredentials(baseContext: Context)
     {
         startActivity(baseContext, Intent(Intent.ACTION_VIEW, Uri.parse("https://api.imgur.com/oauth2/authorize?response_type=token&client_id=" + this.clientId)), null)
     }
 
+    /**
+     * Parse received data from login
+     * The resulting data is stored in the object data value
+     *
+     * @param data the data string to parse
+     */
     fun parseData(data: String)
     {
         val query = data.split('#')[1]
@@ -31,6 +45,12 @@ object ImgurAPI {
         }
     }
 
+    /**
+     * Get the string from a JSONObject
+     *
+     * @param jsonObject The JSONObject
+     * @return the link string
+     */
     private fun getJsonLink(jsonObject: JSONObject): String
     {
         return if (jsonObject.has("cover")) {
@@ -40,6 +60,13 @@ object ImgurAPI {
         }
     }
 
+    /**
+     * Converts a JSONArray to a list of Images
+     *
+     * @param jsonArray the JSONArray object
+     * @param useFastLink if true, get the cover image as link image
+     * @return The list of Images
+     */
     fun jsonToImageList(jsonArray: JSONArray, useFastLink: Boolean = false): ArrayList<Image>
     {
         val imageList: ArrayList<Image> = ArrayList()
@@ -62,6 +89,12 @@ object ImgurAPI {
         return imageList
     }
 
+    /**
+     * Build a get request from an url
+     *
+     * @param url the HttpUrl object
+     * @return Builded request
+     */
     private fun buildGetRequest(url: HttpUrl): Request?
     {
         return Request.Builder()
@@ -73,6 +106,13 @@ object ImgurAPI {
             .build()
     }
 
+    /**
+     * Launch an asynchronous request from a builded request.
+     *
+     * @param req The request to launch
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     private fun asyncRequest(req: Request, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         httpClient.newCall(req).enqueue(object: Callback {
@@ -95,6 +135,36 @@ object ImgurAPI {
         })
     }
 
+    /**
+     * Retrieve an Imgur image from its ID
+     *
+     * @param id The ID of the image as string
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
+    fun getImage(id: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    {
+        val url = HttpUrl.Builder()
+            .scheme("https")
+            .host(host)
+            .addPathSegment(apiVersion)
+            .addPathSegment("image")
+            .addPathSegment(id)
+            .build()
+        val req: Request? = buildGetRequest(url)
+        req?.let {
+            return asyncRequest(it, resolve, reject)
+        }
+        return reject(Exception())
+    }
+
+    /**
+     * Favorite an Imgur image from its ID
+     *
+     * @param id The ID of the image as string
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun favorite(id: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -112,6 +182,12 @@ object ImgurAPI {
         return reject(Exception())
     }
 
+    /**
+     * Retrieve the avatar of the logged user
+     *
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun getUserAvatar(resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -129,6 +205,13 @@ object ImgurAPI {
         return reject(Exception())
     }
 
+    /**
+     * Retrieve all Imgur images of the logged user
+     *
+     * @param page The number of the requested page
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun getUserImages(page: Int = 0, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -147,6 +230,13 @@ object ImgurAPI {
         return reject(Exception())
     }
 
+    /**
+     * Retrieve all Imgur favorited images of the logged user
+     *
+     * @param page The number of the requested page
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun getUserFavorites(page: Int = 0, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -165,6 +255,13 @@ object ImgurAPI {
         return reject(Exception())
     }
 
+    /**
+     * Retrieve all Imgur images from a search query
+     *
+     * @param value The value of the request
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun searchImages(value: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
@@ -182,6 +279,12 @@ object ImgurAPI {
         return reject(Exception())
     }
 
+    /**
+     * Retrieve biography of the logged user
+     *
+     * @param resolve Function to execute if the request success
+     * @param reject Function to execute if the request fail
+     */
     fun getUserBio(resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()

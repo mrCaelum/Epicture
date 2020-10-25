@@ -18,6 +18,9 @@ import okhttp3.internal.notifyAll
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Fragment that implement a recycler view showing favorited images of logged user.
+ */
 class FavoritesFragment : Fragment() {
     private lateinit var fragView: View
     private lateinit var recyclerView: RecyclerView

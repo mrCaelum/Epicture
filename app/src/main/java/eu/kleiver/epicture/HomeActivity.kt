@@ -13,7 +13,10 @@ import com.bumptech.glide.Glide
 import eu.kleiver.epicture.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
 
-
+/**
+ * The main activity of the application.
+ * The 5 fragments are implemented here.
+ */
 class HomeActivity : AppCompatActivity() {
     private lateinit var usernameContainer: TextView
     private lateinit var avatarContainer: ImageView

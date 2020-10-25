@@ -10,14 +10,14 @@
         android:id="@+id/fullImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/likeButton"
+        app:layout_constraintBottom_toTopOf="@+id/fav_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_main_logo" />
 
     <ImageView
-        android:id="@+id/likeButton"
+        android:id="@+id/fav_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="32dp"
