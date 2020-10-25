@@ -1,9 +1,7 @@
 package eu.kleiver.epicture
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -53,11 +51,10 @@ class HomeActivity : AppCompatActivity() {
         })
         avatarModel.loadAvatar()
 
-        val avatar_container = findViewById<ImageView>(R.id.avatar_container)
-        avatar_container.setOnClickListener {
+        val avatarContainer = findViewById<ImageView>(R.id.avatar_container)
+        avatarContainer.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             Toast.makeText(this, "Welcome to your profile settings !", Toast.LENGTH_SHORT).show()
-
         }
     }
 

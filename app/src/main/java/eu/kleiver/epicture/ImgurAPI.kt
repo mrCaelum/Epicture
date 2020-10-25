@@ -95,7 +95,7 @@ object ImgurAPI {
         })
     }
 
-    fun getImage(id: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
+    fun favorite(id: String, resolve: (JSONObject) -> Unit, reject: (Exception) -> Unit)
     {
         val url = HttpUrl.Builder()
             .scheme("https")
@@ -103,6 +103,7 @@ object ImgurAPI {
             .addPathSegment(apiVersion)
             .addPathSegment("image")
             .addPathSegment(id)
+            .addPathSegment("favorite")
             .build()
         val req: Request? = buildGetRequest(url)
         req?.let {
